@@ -2,8 +2,8 @@ name: CD
 
 on:
   push:
-    tags:
-      - "v*.*.*"
+    # tags:
+    #   - "v*.*.*"
 
 env:
   CARGO_TERM_COLOR: always
@@ -101,9 +101,7 @@ jobs:
             shasum -a 256 ncspot-${{ steps.extract_tag.outputs.tag }}-${{ matrix.build_target }}.tar.gz > ncspot-${{ steps.extract_tag.outputs.tag }}-${{ matrix.build_target }}.sha256
             ;;
           esac;
-      - name: Releasing assets
-        uses: softprops/action-gh-release@v1
+      - uses: actions/upload-artifact@v4
         with:
-          files: target/${{ matrix.target }}/release/ncspot-*
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          name: ncspot-${{ matrix.target }}.tar.gz
+          path: target/${{ matrix.target }}/release/ncspot-*
