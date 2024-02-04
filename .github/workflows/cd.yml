@@ -15,7 +15,7 @@ jobs:
     container: ${{ matrix.container }}
     strategy:
       matrix:
-        build_target: [linux-x86_64, linux-arm64, linux-armhf, macos-x86_64, macos-aarch64, windows-x86_64]
+        build_target: [linux-x86_64, macos-x86_64, macos-aarch64, windows-x86_64]
         include:
           - build_target: linux-x86_64
             os: ubuntu-latest
@@ -53,11 +53,10 @@ jobs:
             target: x86_64-pc-windows-msvc
             features: '--no-default-features --features rodio_backend,pancurses_backend,share_clipboard,notify'
     steps:
+      - name: Install rustup
+        run: curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- --default-toolchain none -y
       - name: Install Rust toolchain
-        uses: dtolnay/rust-toolchain@stable
-        with:
-          target: ${{ matrix.target }}
-          toolchain: stable
+        run: rustup target add ${{ matrix.target }}
       - name: Install macOS dependencies
         if: matrix.os == 'macos-latest'
         run: brew install portaudio pkg-config
